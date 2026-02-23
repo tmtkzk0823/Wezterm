@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "Lua 5.4",
+    "path": [
+      "?.lua",
+      "?/init.lua"
+    ]
+  },
+  "diagnostics": {
+    "disable": [
+      "undefined-global",
+      "undefined-field",
+      "undefined-doc-name",
+      "inject-field"
+    ],
+    "globals": [
+      "wezterm"
+    ]
+  },
+  "workspace": {
+    "library": [],
+    "checkThirdParty": false,
+    "ignoreDir": [
+      ".git"
+    ]
+  },
+  "completion": {
+    "callSnippet": "Replace",
+    "keywordSnippet": "Replace"
+  },
+  "hint": {
+    "enable": true
+  }
+}
