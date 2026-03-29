@@ -3,6 +3,41 @@ local act = wezterm.action
 
 local module = {}
 
+-- オーバーレイペインでコマンドを起動するヘルパー
+local function spawn_overlay_pane(command)
+	return wezterm.action_callback(function(window, pane)
+		local new_pane = pane:split({
+			direction = "Bottom",
+			args = { os.getenv("SHELL") or "/bin/zsh", "-ic", command },
+		})
+		window:perform_action(act.TogglePaneZoomState, new_pane)
+	end)
+end
+
+-- ランチャーの選択肢
+local launcher_choices = {
+	{ label = "Neovim", command = "nvim", icon = "md_file_edit" },
+	{ label = "Lazygit", command = "lazygit", icon = "md_git" },
+	{ label = "Zsh", command = "zsh", icon = "md_console" },
+	{ label = "Claude", command = "claude", icon = "md_robot" },
+}
+
+module.launcher_choices = launcher_choices
+module.spawn_overlay_pane = spawn_overlay_pane
+
+-- コマンドパレットにランチャー項目を追加（launcher_choicesと同スコープで登録）
+wezterm.on("augment-command-palette", function(window, pane)
+	local entries = {}
+	for _, item in ipairs(launcher_choices) do
+		table.insert(entries, {
+			brief = "Launch: " .. item.label,
+			icon = item.icon,
+			action = spawn_overlay_pane(item.command),
+		})
+	end
+	return entries
+end)
+
 -- ペインの高さを指定したパーセンテージに設定するヘルパー関数
 local function set_pane_height_percent(percent)
 	return wezterm.action_callback(function(window, pane)
@@ -105,6 +140,8 @@ local keys = {
 	{ key = "9", mods = "SUPER", action = act.ActivateTab(-1) },
 	{ key = "t", mods = "SUPER", action = act.SpawnTab("CurrentPaneDomain") },
 	{ key = "w", mods = "SUPER", action = act.CloseCurrentTab({ confirm = true }) },
+	{ key = "LeftArrow", mods = "SUPER|SHIFT", action = act.MoveTabRelative(-1) },
+	{ key = "RightArrow", mods = "SUPER|SHIFT", action = act.MoveTabRelative(1) },
 	-- Pane操作
 	-- <C-h> has been remapped to Backspace, so Backspace must be specified here
 	{ key = "h", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Left") },
@@ -219,6 +256,37 @@ local keys = {
 		}),
 	},
 	{ key = "s", mods = "LEADER", action = act.ActivateKeyTable({ name = "setting_mode", one_shot = false }) },
+
+	-- ランチャー: ツールをインタラクティブに選択して起動
+	{
+		key = "l",
+		mods = "LEADER",
+		action = act.InputSelector({
+			title = "Launcher",
+			choices = (function()
+				local choices = {}
+				for _, item in ipairs(launcher_choices) do
+					table.insert(choices, { label = item.label })
+				end
+				return choices
+			end)(),
+			action = wezterm.action_callback(function(window, pane, _id, label)
+				if not label then
+					return
+				end
+				for _, item in ipairs(launcher_choices) do
+					if item.label == label then
+						local new_pane = pane:split({
+							direction = "Bottom",
+							args = { os.getenv("SHELL") or "/bin/zsh", "-ic", item.command },
+						})
+						window:perform_action(act.TogglePaneZoomState, new_pane)
+						return
+					end
+				end
+			end),
+		}),
+	},
 	-- 直前のコマンドと出力をコピー
 	{
 		key = "z",
