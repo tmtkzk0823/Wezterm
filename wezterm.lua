@@ -70,7 +70,8 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	return " " .. title .. " "
 end)
 
-require("keybinds").apply_to_config(config)
+local keybinds = require("keybinds")
+keybinds.apply_to_config(config)
 
 -- オプショナルモジュール（keymapsの後に読み込む）
 -- require("modules.opacity").apply_to_config(config)
