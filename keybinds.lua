@@ -257,6 +257,24 @@ local keys = {
 			end)
 		end),
 	},
+	-- タブのリネーム（tmux: prefix + ,）
+	{
+		key = ",",
+		mods = "LEADER",
+		action = act.PromptInputLine({
+			description = "(wezterm) Rename tab (empty to reset):",
+			action = wezterm.action_callback(function(window, pane, line)
+				if line == nil then return end
+				local tab_module = require("tab")
+				local tab = pane:tab()
+				if line == "" then
+					tab_module.custom_title[tab:tab_id()] = nil
+				else
+					tab_module.custom_title[tab:tab_id()] = line
+				end
+			end),
+		}),
+	},
 	-- バッファの内容をNeovimで表示（色付き）
 	{
 		key = "b",
