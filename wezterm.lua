@@ -30,7 +30,7 @@ config.quick_select_patterns = {
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = false
-config.tab_bar_at_bottom = false
+config.tab_bar_at_bottom = true
 
 -- タブバーの色設定
 config.colors = {
@@ -62,7 +62,8 @@ config.colors = {
 
 -- タブのタイトル表示をカスタマイズ
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local title = tab.active_pane.title
+	local tab_module = require("tab")
+	local title = tab_module.custom_title[tab.tab_id] or tab.active_pane.title
 	-- タイトルが長すぎる場合は切り詰める
 	if #title > 25 then
 		title = wezterm.truncate_right(title, 25)
