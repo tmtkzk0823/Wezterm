@@ -32,8 +32,16 @@ config.hide_tab_bar_if_only_one_tab = false
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 
+-- 非アクティブペインを暗くしてフォーカスペインを目立たせる
+config.inactive_pane_hsb = {
+	saturation = 0.7, -- 彩度を70%に（色を薄くする）
+	brightness = 0.4, -- 明度を40%に（暗くする）
+}
+
 -- タブバーの色設定
 config.colors = {
+	-- ペイン分割線の色
+	split = "#414868",
 	tab_bar = {
 		background = "#1a1b26",
 		active_tab = {
