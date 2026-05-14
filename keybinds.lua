@@ -124,7 +124,8 @@ local keys = {
 	-- 終了
 	{ key = "q", mods = "SUPER", action = act.QuitApplication },
 	-- ウィンドウ操作
-	{ key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
+	-- 誤爆防止のため無効化（フルスクリーンは Cmd+Ctrl+F で切替）
+	-- { key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 	{ key = "n", mods = "SUPER", action = act.SpawnWindow },
 	-- タブ操作
 	{ key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
