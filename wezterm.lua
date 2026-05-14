@@ -16,6 +16,9 @@ config.automatically_reload_config = true
 config.font_size = 13.0
 config.font = wezterm.font("HackGen Console NF")
 
+-- ペイン分割線などの太さ（underlineと共用）
+config.underline_thickness = "2pt"
+
 -- 背景の透過度とぼかし
 config.window_background_opacity = 0.8
 config.macos_window_background_blur = 13
